@@ -80,5 +80,5 @@ def verify_setup():
         _logger.info("Closing database connection")
         dbconn.close()
     # endregion
-
     _logger.info("Setup verified successfully!")
+    print("\nSetup complete.")
