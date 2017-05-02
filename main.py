@@ -6,7 +6,7 @@ import sqlite3
 import uuid
 import logging
 import argparse
-from linetracker_setup import run_setup
+import linetracker_setup
 
 logging.basicConfig(level=logging.INFO)
 _logger = logging.getLogger(__name__)
@@ -94,19 +94,20 @@ def main():
     args = parser.parse_args()
     if args.v:
         _logger.setLevel(logging.DEBUG)
-        print("Verbose logging enabled")
-        _logger.debug("Verbose logging enabled")
+        _logger.info("Verbose logging enabled")
 
     if args.setup:
         # prepare the application for first use
+        # set logging level to DEBUG since this is initial application setup task
         _logger.setLevel(logging.DEBUG)
         _logger.info("Performing initial setup of the application")
-        print("Beginning initial setup...")
-        run_setup()
+        # start the setup
+        linetracker_setup.run_setup()
     else:
         # run application
         update_day()
 
 
 if __name__ == "__main__":
+    # Call to main
     main()

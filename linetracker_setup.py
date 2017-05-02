@@ -5,9 +5,9 @@ from config.linetracker_config \
     db_path, \
     db_name, \
     create_day_table_sql, \
-    create_game_table_sql, \
+    create_games_table_sql, \
     verify_table_sql, \
-    database_tables
+    dbtable_create_statements
 import sqlite3
 import logging
 
@@ -39,37 +39,25 @@ def run_setup():
     create_tables()
     # endregion
 
-def create_table(table_name, sql):
-    global dbconn
-    cur = dbconn.cursor()
-    try:
-        _logger.info("Creating `%s` table..." % (table_name,))
-        cur.execute(sql)
-        _logger.info("Created `%s` table" % (table_name,))
-    except sqlite3.DatabaseError as db_error:
-        _logger.debug(db_error)
-    except sqlite3.Error as e:
-        _logger.debug("Another error has occurred: '%s' " % (e,))
-
 # Database table creation statements
 def create_tables():
     global dbconn
     cur = dbconn.cursor()
-    try:
-        _logger.info("Creating `day` table...")
-        cur.execute(create_day_table_sql)
-        _logger.info("Created `day` table")
-    except sqlite3.DatabaseError as db_error:
-        _logger.debug(db_error)
-    except sqlite3.Error as e:
-        _logger.debug("Another error has occurred: '%s' " % (e,))
+    for key in dbtable_create_statements:
+        try:
+            cur.execute(dbtable_create_statements[key])
+            _logger.info("`%s` table created successfully" % (key,))
+        except sqlite3.DatabaseError as db_error:
+            _logger.debug(db_error)
+        except sqlite3.Error as e:
+            _logger.debug("Another error has occurred: '%s' " % (e,))
 
     # verify setup
-    verify()
+    verify_setup()
 
-def verify():
+def verify_setup():
+    _logger.info("*************** Beginning setup verification phase ***************")
     global dbconn
-    _logger.info("Verifying setup...")
     if not os.path.exists(db_file):
         _logger.debug("Could not find database file '%s'" % (db_file,))
     else:
@@ -79,7 +67,7 @@ def verify():
     _logger.info("Verifying database tables exist...")
     cur = dbconn.cursor()
     try:
-        for t in database_tables:
+        for t in dbtable_create_statements:
             cur.execute(verify_table_sql, (t,))
             count = len(cur.fetchall())
             if count == 1:
@@ -89,6 +77,7 @@ def verify():
     except Exception as e:
         _logger.debug(e)
     finally:
+        _logger.info("Closing database connection")
         dbconn.close()
     # endregion
 
