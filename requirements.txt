@@ -1,3 +1,10 @@
-mysql-connector-python==2.1.5
+appdirs==1.4.3
+cheroot==5.4.0
+CherryPy==10.2.1
+packaging==16.8
+portend==1.8
+pyparsing==2.2.0
+pytz==2017.2
 requests==2.13.0
-virtualenv==15.1.0
+six==1.10.0
+tempora==1.6.1

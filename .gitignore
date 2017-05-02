@@ -99,3 +99,4 @@ ENV/
 
 # Custom settings
 .idea/
+./database/*.db

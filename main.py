@@ -5,9 +5,9 @@ from config.linetracker_config import db_file, query, feed_url
 import sqlite3
 import uuid
 import logging
-import par
+import argparse
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 _logger = logging.getLogger('main')
 # Set as DEBUG for testing
 
@@ -85,6 +85,14 @@ def get_feed_data():
     return json_data
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-v", "--verbose", action="store_true",
+                        help="Enable verbose logging messages", dest="v")
+    args = parser.parse_args()
+    if args.v:
+        _logger.setLevel(logging.DEBUG)
+        print("Verbose logging enabled")
+        _logger.debug("Verbose logging enabled")
     update_day()
 
 

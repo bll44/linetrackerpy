@@ -13,7 +13,7 @@ db_file = os.path.abspath(os.path.join(__file__, "..", "..", "database", db_file
 # region SQL queries
 query = {'day': {}}
 query['day']['insert'] = """
-INSERT INTO da y (day_id, date, lastmodified) VALUES (?, ?, ?)
+INSERT INTO day (day_id, date, lastmodified) VALUES (?, ?, ?)
 """
 query['day']['check_day_exists'] = """
 SELECT * FROM day WHERE date = ?
