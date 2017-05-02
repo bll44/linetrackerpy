@@ -6,21 +6,24 @@ feed_url = "http://www.scoresandodds.com/feeds/day/"
 # endregion
 
 # region Database config
-db_file_name = "linetracker.db"
-db_file = os.path.abspath(os.path.join(__file__, "..", "..", "database", db_file_name))
+db_path = os.path.abspath(os.path.join(__file__, "..", "..", "database"))
+db_name = "linetracker.db"
+db_file = os.path.abspath(os.path.join(db_path, db_name))
 # endregion
 
 # region SQL queries
 
 # region Table create statements
-# create `day` table
-create_day_table = """
+# sql for creating the `day` table
+database_tables = ["day", "games"]
+
+create_day_table_sql = """
 CREATE TABLE "day" ( `day_id` TEXT NOT NULL, `date` TEXT NOT NULL, 
 `lastmodified` INTEGER NOT NULL, PRIMARY KEY(`day_id`) )
 """
 
-# create `game` table
-create_game_table = """
+# sql for creating the `game` table
+create_game_table_sql = """
 CREATE TABLE `games` ( `id` TEXT NOT NULL, `day_id` TEXT NOT NULL, `league` TEXT NOT NULL, `game_id` TEXT NOT NULL, 
 `date` TEXT NOT NULL, `status` TEXT, `period` TEXT, `away_team` TEXT, `away_sfid` TEXT, `away_openline` TEXT, 
 `away_linemovement` TEXT, `away_currentline` TEXT, `away_currentmoneyline` TEXT, `away_pitchername` TEXT, 
@@ -29,6 +32,10 @@ CREATE TABLE `games` ( `id` TEXT NOT NULL, `day_id` TEXT NOT NULL, `league` TEXT
 `home_linemovement` TEXT, `home_halftime_currentline` TEXT, `home_currentline` TEXT, `home_currentmoneyline` TEXT, 
 `home_pitchername` TEXT, `home_currentrunline` TEXT, `home_moneybettingtrends` TEXT, 
 `home_pointspreadbettingtrends` TEXT, `home_totalbettingtrends` TEXT, PRIMARY KEY(`id`) )
+"""
+
+verify_table_sql = """
+SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?
 """
 # endregion
 

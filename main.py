@@ -9,7 +9,7 @@ import argparse
 from linetracker_setup import run_setup
 
 logging.basicConfig(level=logging.INFO)
-_logger = logging.getLogger('main')
+_logger = logging.getLogger(__name__)
 # Set as DEBUG for testing
 
 # Database connection global
@@ -40,7 +40,7 @@ def closedb():
 # endregion
 
 def update_day():
-    c = opendb()
+    cur = opendb()
     today = datetime.today().strftime('%Y-%m-%d')
     try:
         _logger.info("Getting feed data for: " + str(today))
@@ -50,14 +50,14 @@ def update_day():
     day_id = str(uuid.uuid4()).replace("-", "")
 
 # region Check if day already exists
-    c.execute(query['day']['check_day_exists'], (today,))
-    day_data = c.fetchall()
+    cur.execute(query['day']['check_day_exists'], (today,))
+    day_data = cur.fetchall()
     if len(day_data) < 1:
         feed_data_modified = False
         _logger.info("Day does not exist, inserting new day: " + today)
         try:
             values = (day_id, game_data['day']['dateandtime'], game_data['day']['lastmodified'])
-            c.execute(query['day']['insert'], values)
+            cur.execute(query['day']['insert'], values)
             db_conn.commit()
         except Exception as e:
             _logger.debug("Failed to insert new day: " + str(e))
@@ -68,7 +68,7 @@ def update_day():
         _logger.info("Last modified date has changed. Was: " + str(old_lastmodified) + ", Now: " +
                      str(new_lastmodified) + " updating row in database for day: " + str(today))
         lastmodified = int(game_data['day']['lastmodified'])
-        c.execute(query['day']['update_lastmodified'], (lastmodified, today,))
+        cur.execute(query['day']['update_lastmodified'], (lastmodified, today,))
         db_conn.commit()
     else:
         _logger.info("Game data has not changed since last update")
@@ -98,10 +98,13 @@ def main():
         _logger.debug("Verbose logging enabled")
 
     if args.setup:
+        # prepare the application for first use
+        _logger.setLevel(logging.DEBUG)
         _logger.info("Performing initial setup of the application")
         print("Beginning initial setup...")
         run_setup()
     else:
+        # run application
         update_day()
 
 
