@@ -1,8 +1,0 @@
-#!/bin/bash
-echo "!!!Ensure you are running this file from the root of the linetracker project!!!"
-db_dir="`pwd`/database"
-echo "Database directory path is: $db_dir"
-if [ ! -d "$db_dir" ]; then
-    echo "Database directory does not exist, creating..."
-    mkdir database
-fi
