@@ -5,6 +5,9 @@ day_id -> randomly generated
 date -> day->dateandtime
 lastmodified -> day->lastmodified
 
+`day` CREATE STATEMENT:
+CREATE TABLE "day" ( `day_id` TEXT NOT NULL, `date` TEXT NOT NULL, `lastmodified` INTEGER NOT NULL, PRIMARY KEY(`day_id`) )
+
 game_lines:
 guid -> randomly generated PK
 day_id -> from day table
@@ -39,3 +42,6 @@ home_currentrunline -> home->info->currentmlbrunline (also used for NHL puck lin
 home_moneybettingtrends -> home->info->moneybettingtrends
 home_pointspreadbettingtrends -> home->info->POINTSPREADBETTINGTRENDS
 home_totalbettingtrends -> home->info->totalbettingtrends
+
+`games` CREATE STATEMENT:
+CREATE TABLE `games` ( `id` TEXT NOT NULL, `day_id` TEXT NOT NULL, `league` TEXT NOT NULL, `game_id` TEXT NOT NULL, `date` TEXT NOT NULL, `status` TEXT, `period` TEXT, `away_team` TEXT, `away_sfid` TEXT, `away_openline` TEXT, `away_linemovement` TEXT, `away_currentline` TEXT, `away_currentmoneyline` TEXT, `away_pitchername` TEXT, `away_currentrunline` TEXT, `away_moneybettingtrends` TEXT, `away_pointspreadbettingtrends` TEXT, `away_totalbettingtrends` TEXT, `home_team` TEXT, `home_sfid` TEXT, `home_openline` TEXT, `home_linemovement` TEXT, `home_halftime_currentline` TEXT, `home_currentline` TEXT, `home_currentmoneyline` TEXT, `home_pitchername` TEXT, `home_currentrunline` TEXT, `home_moneybettingtrends` TEXT, `home_pointspreadbettingtrends` TEXT, `home_totalbettingtrends` TEXT, PRIMARY KEY(`id`) )
