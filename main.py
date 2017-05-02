@@ -89,8 +89,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-v", "--verbose", action="store_true",
                         help="Enable verbose logging messages", dest="v")
-    parser.add_argument("--setup", action="store_true", help="Perform initial setup for the application. "
-                                        "This will create sqlite3 file and the proper database tables.")
+    parser.add_argument("--setup", action="store_true", help="Prepare the application for first use.")
     args = parser.parse_args()
     if args.v:
         _logger.setLevel(logging.DEBUG)
