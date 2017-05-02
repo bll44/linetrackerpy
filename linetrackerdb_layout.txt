@@ -1,0 +1,41 @@
+linetrackerdb:
+
+day:
+day_id -> randomly generated
+date -> day->dateandtime
+lastmodified -> day->lastmodified
+
+game_lines:
+guid -> randomly generated PK
+day_id -> from day table
+league -> day->league->name
+game_id -> primaryid
+date -> date
+game_status -> gamestatus
+period -> period
+away_team -> away->info->teamname
+away_sfid -> away->info->sfid
+away_openline -> away->info->openline
+away_linemovement -> away->info->LINEMOVEMENTNOWRAP
+away_currentline_class -> away->info->currentline_class
+away_halftime_currentline -> away->info->halftimecurrentline
+away_currentline -> away->info->currentline
+away_currentmoneyline -> away->info->currentmoneyline
+away_pitchername -> away->info->pitchername
+away_currentrunline -> away->info->currentmlbrunline (also used for NHL puck line)
+away_moneybettingtrends -> away->info->moneybettingtrends
+away_pointspreadbettingtrends -> away->info->POINTSPREADBETTINGTRENDS
+away_totalbettingtrends -> away->info->totalbettingtrends
+home_team -> home->info->teamname
+home_sfid -> home->info->sfid
+home_openline -> home->info->openline
+home_linemovement -> home->info->LINEMOVEMENTNOWRAP
+home_currentline_class -> home->info->currentline_class
+home_halftime_currentline -> home->info->halftimecurrentline
+home_currentline -> home->info->currentline
+home_currentmoneyline -> home->info->currentmoneyline
+home_pitchername -> home->info->pitchername
+home_currentrunline -> home->info->currentmlbrunline (also used for NHL puck line)
+home_moneybettingtrends -> home->info->moneybettingtrends
+home_pointspreadbettingtrends -> home->info->POINTSPREADBETTINGTRENDS
+home_totalbettingtrends -> home->info->totalbettingtrends
