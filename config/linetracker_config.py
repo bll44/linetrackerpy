@@ -22,13 +22,13 @@ CREATE TABLE "day" ( `day_id` TEXT NOT NULL, `date` TEXT NOT NULL,
 
 # sql for creating the `game` table
 create_games_table_sql = """
-CREATE TABLE `games` ( `id` TEXT NOT NULL, `day_id` TEXT NOT NULL, `league` TEXT NOT NULL, `game_id` TEXT NOT NULL, 
+CREATE TABLE "games" ( `id` TEXT NOT NULL, `day_id` TEXT NOT NULL, `league` TEXT NOT NULL, `game_id` TEXT NOT NULL, 
 `date` TEXT NOT NULL, `status` TEXT, `period` TEXT, `away_team` TEXT, `away_sfid` TEXT, `away_openline` TEXT, 
-`away_linemovement` TEXT, `away_currentline` TEXT, `away_currentmoneyline` TEXT, `away_pitchername` TEXT, 
-`away_currentrunline` TEXT, `away_moneybettingtrends` TEXT, `away_pointspreadbettingtrends` TEXT, 
-`away_totalbettingtrends` TEXT, `home_team` TEXT, `home_sfid` TEXT, `home_openline` TEXT, 
-`home_linemovement` TEXT, `home_halftime_currentline` TEXT, `home_currentline` TEXT, `home_currentmoneyline` TEXT, 
-`home_pitchername` TEXT, `home_currentrunline` TEXT, `home_moneybettingtrends` TEXT, 
+`away_linemovement` TEXT, `away_halftime_currentline` TEXT, `away_currentline` TEXT, `away_currentmoneyline` TEXT, 
+`away_pitchername` TEXT, `away_currentrunline` TEXT, `away_moneybettingtrends` TEXT, 
+`away_pointspreadbettingtrends` TEXT, `away_totalbettingtrends` TEXT, `home_team` TEXT, `home_sfid` TEXT, 
+`home_openline` TEXT, `home_linemovement` TEXT, `home_halftime_currentline` TEXT, `home_currentline` TEXT, 
+`home_currentmoneyline` TEXT, `home_pitchername` TEXT, `home_currentrunline` TEXT, `home_moneybettingtrends` TEXT, 
 `home_pointspreadbettingtrends` TEXT, `home_totalbettingtrends` TEXT, PRIMARY KEY(`id`) )
 """
 
@@ -41,17 +41,78 @@ verify_table_sql = """
 SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?
 """
 # endregion
+query = {}
 
-query = {'day': {}}
-query['day']['insert'] = """
-INSERT INTO day (day_id, date, lastmodified) VALUES (?, ?, ?)
-"""
-query['day']['check_day_exists'] = """
-SELECT * FROM day WHERE date = ?
-"""
-query['day']['update_lastmodified'] = """
-UPDATE day SET lastmodified = ? WHERE date = ?
-"""
+# region `day` table queries
+query["day"] = {
+    "insert": """
+    INSERT INTO day (day_id, date, lastmodified) VALUES (?, ?, ?)    
+    """,
+    "check_day_exists": """
+    SELECT * FROM day WHERE date = ?
+    """,
+    "update_lastmodified": """
+    UPDATE day SET lastmodified = ? WHERE date = ?
+    """
+}
+# endregion
+
+# region `games` table queries
+query['games'] = {
+    "insert": """
+    INSERT INTO games (
+        id,
+        day_id,
+        league,
+        game_id,
+        date,
+        status,
+        period,
+        away_team,
+        away_sfid,
+        away_openline,
+        away_linemovement,
+        away_halftime_currentline,
+        away_currentline,
+        away_currentmoneyline,
+        away_pitchername,
+        away_currentrunline,
+        away_moneybettingtrends,
+        away_pointspreadbettingtrends,
+        away_totalbettingtrends,
+        home_team,
+        home_sfid,
+        home_openline,
+        home_linemovement,
+        home_halftime_currentline,
+        home_currentline,
+        home_currentmoneyline,
+        home_pitchername,
+        home_currentrunline,
+        home_moneybettingtrends,
+        home_pointspreadbettingtrends,
+        home_totalbettingtrends
+    ) VALUES (
+        ?, ?, ?, ?, ?, ?,
+        ?, ?, ?, ?, ?, ?,
+        ?, ?, ?, ?, ?, ?,
+        ?, ?, ?, ?, ?, ?,
+        ?, ?, ?, ?, ?, ?,
+        ?
+    )
+    """
+}
+# endregion
+
+# query['day']['insert'] = """
+# INSERT INTO day (day_id, date, lastmodified) VALUES (?, ?, ?)
+# """
+# query['day']['check_day_exists'] = """
+# SELECT * FROM day WHERE date = ?
+# """
+# query['day']['update_lastmodified'] = """
+# UPDATE day SET lastmodified = ? WHERE date = ?
+# """
 # endregion
 
 # region League config

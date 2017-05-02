@@ -13,7 +13,7 @@ _logger = logging.getLogger(__name__)
 # Set as DEBUG for testing
 
 # Database connection global
-db_conn = None
+dbconn = None
 
 # region Dictionary factory for sqlite queries
 def dict_factory(cursor, row):
@@ -25,18 +25,18 @@ def dict_factory(cursor, row):
 
 # region Database connection methods
 def opendb():
-    global db_conn
+    global dbconn
     _logger.debug("Opening database connection")
     try:
-       db_conn = sqlite3.connect(db_file)
-       db_conn.row_factory = dict_factory
+       dbconn = sqlite3.connect(db_file)
+       dbconn.row_factory = dict_factory
     except Exception as e:
         _logger.debug("Could not open a connection to the database: " + str(e))
-    return db_conn.cursor()
+    return dbconn.cursor()
 
 def closedb():
-    global db_conn
-    db_conn.close()
+    global dbconn
+    dbconn.close()
 # endregion
 
 def update_day():
@@ -49,16 +49,16 @@ def update_day():
         _logger.debug("Failed to get feed data: " + str(e))
     day_id = str(uuid.uuid4()).replace("-", "")
 
-# region Check if day already exists
+    # region Check if day already exists
     cur.execute(query['day']['check_day_exists'], (today,))
     day_data = cur.fetchall()
     if len(day_data) < 1:
-        feed_data_modified = False
+        feed_data_modified = True
         _logger.info("Day does not exist, inserting new day: " + today)
         try:
             values = (day_id, game_data['day']['dateandtime'], game_data['day']['lastmodified'])
             cur.execute(query['day']['insert'], values)
-            db_conn.commit()
+            dbconn.commit()
         except Exception as e:
             _logger.debug("Failed to insert new day: " + str(e))
     elif int(game_data['day']['lastmodified']) != int(day_data[0]['lastmodified']):
@@ -69,12 +69,24 @@ def update_day():
                      str(new_lastmodified) + " updating row in database for day: " + str(today))
         lastmodified = int(game_data['day']['lastmodified'])
         cur.execute(query['day']['update_lastmodified'], (lastmodified, today,))
-        db_conn.commit()
+        dbconn.commit()
     else:
         _logger.info("Game data has not changed since last update")
         feed_data_modified = False
     # endregion
 
+    if feed_data_modified:
+        # add modified entries into the database
+        update_games(game_data)
+
+    # close the database connection
+    closedb()
+
+
+def update_games(data):
+    _logger.info("Inserting new game data")
+    cur = opendb()
+    print(json.dumps(data, indent=1))
     # close the database connection
     closedb()
 
@@ -82,8 +94,7 @@ def update_day():
 def get_feed_data():
     today = datetime.today().strftime('%Y%m%d')
     response = requests.get(feed_url + today)
-    json_data = json.loads(response.text.lower())
-    return json_data
+    return json.loads(response.text.lower())
 
 def main():
     parser = argparse.ArgumentParser()
