@@ -12,7 +12,7 @@ import sqlite3
 import logging
 
 _logger = logging.getLogger(__name__)
-_logger.setLevel(logging.INFO)
+_logger.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
 ch.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
 _logger.addHandler(ch)

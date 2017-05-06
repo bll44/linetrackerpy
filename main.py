@@ -121,7 +121,8 @@ def insert_game(guid, day_id, league, game, cursor):
         game['home']['info']['currentmlbrunline'],
         game['home']['info']['moneybettingtrends'],
         game['home']['info']['pointspreadbettingtrends'],
-        "test"
+        game['home']['info']['totalbettingtrends'],
+        datetime.today().strftime('%Y-%m-%d %H:%M:%S')
     ))
     dbconn.commit()
 

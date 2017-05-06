@@ -29,7 +29,7 @@ CREATE TABLE "games" ( `id` TEXT NOT NULL, `day_id` TEXT NOT NULL, `league` TEXT
 `away_pointspreadbettingtrends` TEXT, `away_totalbettingtrends` TEXT, `home_team` TEXT, `home_sfid` TEXT, 
 `home_openline` TEXT, `home_linemovement` TEXT, `home_halftime_currentline` TEXT, `home_currentline` TEXT, 
 `home_currentmoneyline` TEXT, `home_pitchername` TEXT, `home_currentrunline` TEXT, `home_moneybettingtrends` TEXT, 
-`home_pointspreadbettingtrends` TEXT, `home_totalbettingtrends` TEXT, PRIMARY KEY(`id`) )
+`home_pointspreadbettingtrends` TEXT, `home_totalbettingtrends` TEXT, `created_at` TEXT, PRIMARY KEY(`id`) )
 """
 
 dbtable_create_statements = {
