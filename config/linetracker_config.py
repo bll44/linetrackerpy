@@ -94,14 +94,15 @@ query['games'] = {
         home_currentrunline,
         home_moneybettingtrends,
         home_pointspreadbettingtrends,
-        home_totalbettingtrends
+        home_totalbettingtrends,
+        created_at
     ) VALUES (
         ?, ?, ?, ?, ?, ?,
         ?, ?, ?, ?, ?, ?,
         ?, ?, ?, ?, ?, ?,
         ?, ?, ?, ?, ?, ?,
         ?, ?, ?, ?, ?, ?,
-        ?
+        ?, ?
     )
     """
 }
