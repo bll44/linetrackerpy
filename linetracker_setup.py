@@ -14,6 +14,7 @@ import logging
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.INFO)
 ch = logging.StreamHandler()
+ch.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
 _logger.addHandler(ch)
 
 # global database connection
