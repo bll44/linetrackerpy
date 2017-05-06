@@ -54,6 +54,7 @@ def update_day():
     day_id = str(uuid.uuid4()).replace("-", "")
 
     # region Check if day already exists
+    _logger.debug(game_data)
     cur.execute(query['day']['check_day_exists'], (today,))
     day_data = cur.fetchall()
     if len(day_data) < 1:
