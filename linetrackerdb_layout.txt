@@ -20,7 +20,6 @@ away_team -> away->info->teamname
 away_sfid -> away->info->sfid
 away_openline -> away->info->openline
 away_linemovement -> away->info->LINEMOVEMENTNOWRAP
-away_currentline_class -> away->info->currentline_class
 away_halftime_currentline -> away->info->halftimecurrentline
 away_currentline -> away->info->currentline
 away_currentmoneyline -> away->info->currentmoneyline
@@ -33,7 +32,6 @@ home_team -> home->info->teamname
 home_sfid -> home->info->sfid
 home_openline -> home->info->openline
 home_linemovement -> home->info->LINEMOVEMENTNOWRAP
-home_currentline_class -> home->info->currentline_class
 home_halftime_currentline -> home->info->halftimecurrentline
 home_currentline -> home->info->currentline
 home_currentmoneyline -> home->info->currentmoneyline

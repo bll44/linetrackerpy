@@ -1,3 +1,4 @@
+import time
 import requests
 import json
 from datetime import datetime
@@ -36,6 +37,7 @@ def opendb():
 
 def closedb():
     global dbconn
+    _logger.debug("Closing database connection")
     dbconn.close()
 # endregion
 
@@ -77,16 +79,66 @@ def update_day():
 
     if feed_data_modified:
         # add modified entries into the database
-        update_games(game_data)
-
+        # update_games(game_data, today)
+        pass
+    update_games(game_data, today)
     # close the database connection
     closedb()
 
 
-def update_games(data):
+def insert_game(guid, day_id, league, game, cursor):
+    global dbconn
+    cursor.execute(query['games']['insert'], (
+        str(guid),
+        day_id,
+        league['name'],
+        game['primaryid'],
+        game['date'],
+        game['gamestatus'],
+        game['period'],
+        game['away']['info']['teamname'],
+        game['away']['info']['sfid'],
+        game['away']['info']['openline'],
+        game['away']['info']['linemovementnowrap'],
+        game['away']['info']['halftimecurrentline'],
+        game['away']['info']['currentline'],
+        game['away']['info']['currentmoneyline'],
+        game['away']['info']['pitchername'],
+        game['away']['info']['currentmlbrunline'],
+        game['away']['info']['moneybettingtrends'],
+        game['away']['info']['pointspreadbettingtrends'],
+        game['away']['info']['totalbettingtrends'],
+        game['home']['info']['teamname'],
+        game['home']['info']['sfid'],
+        game['home']['info']['openline'],
+        game['home']['info']['linemovementnowrap'],
+        game['home']['info']['halftimecurrentline'],
+        game['home']['info']['currentline'],
+        game['home']['info']['currentmoneyline'],
+        game['home']['info']['pitchername'],
+        game['home']['info']['currentmlbrunline'],
+        game['home']['info']['moneybettingtrends'],
+        game['home']['info']['pointspreadbettingtrends'],
+        "test"
+    ))
+    dbconn.commit()
+
+
+def update_games(data, today):
     _logger.info("Inserting new game data")
     cur = opendb()
-    print(json.dumps(data, indent=1))
+    cur.execute(query['day']['get_day_id'], (today,))
+    day_id = cur.fetchone()['day_id']
+    _logger.info("Inserting games with day id: " + str(day_id))
+    for league in data['day']['league']:
+        if type(league['game']).__name__ == 'list':
+            for game in league['game']:
+                guid = uuid.uuid4()
+                insert_game(guid, day_id, league, game, cur)
+        else:
+            guid = uuid.uuid4()
+            game = league['game']
+            insert_game(guid, day_id, league, game, cur)
     # close the database connection
     closedb()
 
@@ -115,7 +167,9 @@ def main():
         linetracker_setup.run_setup()
     else:
         # run application
-        update_day()
+        while True:
+            update_day()
+            time.sleep(300)
 
 
 if __name__ == "__main__":

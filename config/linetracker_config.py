@@ -53,6 +53,9 @@ query["day"] = {
     """,
     "update_lastmodified": """
     UPDATE day SET lastmodified = ? WHERE date = ?
+    """,
+    "get_day_id": """
+    SELECT day_id FROM day WHERE date = ?
     """
 }
 # endregion
