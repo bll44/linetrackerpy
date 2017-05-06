@@ -11,8 +11,10 @@ from config.linetracker_config \
 import sqlite3
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
 _logger = logging.getLogger(__name__)
+_logger.setLevel(logging.INFO)
+ch = logging.StreamHandler()
+_logger.addHandler(ch)
 
 # global database connection
 dbconn = None

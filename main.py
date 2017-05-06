@@ -9,9 +9,10 @@ import logging
 import argparse
 import linetracker_setup
 
-logging.basicConfig(level=logging.INFO)
 _logger = logging.getLogger(__name__)
-# Set as DEBUG for testing
+_logger.setLevel(logging.INFO)
+ch = logging.StreamHandler()
+_logger.addHandler(ch)
 
 # Database connection global
 dbconn = None
@@ -156,7 +157,7 @@ def main():
     args = parser.parse_args()
     if args.v:
         _logger.setLevel(logging.DEBUG)
-        _logger.info("Verbose logging enabled")
+        _logger.debug("Verbose logging enabled")
 
     if args.setup:
         # prepare the application for first use
