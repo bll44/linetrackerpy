@@ -89,7 +89,7 @@ def update_day():
     closedb()
 
 
-def insert_game(guid, day_id, league, game, cursor):
+def insert_game(guid, day_id, league, game, cursor, created_at):
     global dbconn
     cursor.execute(query['games']['insert'], (
         str(guid),
@@ -123,7 +123,7 @@ def insert_game(guid, day_id, league, game, cursor):
         game['home']['info']['moneybettingtrends'],
         game['home']['info']['pointspreadbettingtrends'],
         game['home']['info']['totalbettingtrends'],
-        datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+        created_at
     ))
     dbconn.commit()
 
@@ -134,15 +134,16 @@ def update_games(data, today):
     cur.execute(query['day']['get_day_id'], (today,))
     day_id = cur.fetchone()['day_id']
     _logger.info("Inserting games with day id: " + str(day_id))
+    created_at = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
     for league in data['day']['league']:
         if type(league['game']).__name__ == 'list':
             for game in league['game']:
                 guid = uuid.uuid4()
-                insert_game(guid, day_id, league, game, cur)
+                insert_game(guid, day_id, league, game, cur, created_at)
         else:
             guid = uuid.uuid4()
             game = league['game']
-            insert_game(guid, day_id, league, game, cur)
+            insert_game(guid, day_id, league, game, cur, created_at)
     # close the database connection
     closedb()
 
