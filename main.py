@@ -8,11 +8,14 @@ import uuid
 import logging
 import argparse
 import linetracker_setup
+import threading
+import cherrypy
+from server import LTServer
 
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.INFO)
 ch = logging.StreamHandler()
-ch.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+ch.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
 _logger.addHandler(ch)
 
 # Database connection global
@@ -42,6 +45,14 @@ def closedb():
     _logger.debug("Closing database connection")
     dbconn.close()
 # endregion
+
+def run_server():
+    cherrypy.quickstart(LTServer(), '/')
+
+def update_data():
+    while True:
+        update_day()
+        time.sleep(300)
 
 def update_day():
     cur = opendb()
@@ -172,9 +183,15 @@ def main():
         linetracker_setup.run_setup()
     else:
         # run application
-        while True:
-            update_day()
-            time.sleep(300)
+        data_thread = threading.Thread(target=update_data)
+        data_thread.daemon = True
+        data_thread.start()
+
+        server = threading.Thread(target=run_server)
+        server.daemon = True
+        server.start()
+
+        server.join()
 
 
 if __name__ == "__main__":
