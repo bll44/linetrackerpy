@@ -1,18 +1,13 @@
 import os
+import sqlite3
 from config.linetracker_config \
     import \
     db_file, \
     db_path, \
     db_name, \
-    create_day_table_sql, \
-    create_games_table_sql, \
     verify_table_sql, \
     dbtable_create_statements
-import sqlite3
-import logging
-from lib.logger import configure_logging
-import sys
-
+from helpers.utils.logger import configure_logging
 
 # _logger = logging.getLogger(__name__)
 # _logger.setLevel(logging.DEBUG)

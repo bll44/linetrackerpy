@@ -1,18 +1,17 @@
-import time
-import requests
-import json
-from datetime import datetime
-from config.linetracker_config import db_file, query, feed_url
-import sqlite3
-import uuid
-import logging
 import argparse
-import linetracker_setup
+import json
+import logging
+import sqlite3
 import threading
+import time
+import uuid
+from datetime import datetime
 import cherrypy
+import requests
+import linetracker_setup
+from config import linetracker_config as lt_config
+from helpers.utils.logger import configure_logging
 from server import LTServer
-from lib.logger import configure_logging
-
 
 _logger = configure_logging(__name__, level='DEBUG')
 
@@ -32,7 +31,7 @@ def opendb():
     global dbconn
     _logger.debug('Opening database connection')
     try:
-       dbconn = sqlite3.connect(db_file)
+       dbconn = sqlite3.connect(lt_config.db_file)
        dbconn.row_factory = dict_factory
     except Exception as e:
         _logger.debug('Could not open a connection to the database: ' + str(e))
@@ -45,6 +44,7 @@ def closedb():
 # endregion
 
 def run_server():
+    cherrypy.config.update(lt_config.server_conf_file)
     cherrypy.quickstart(LTServer(), '/')
 
 def update_data():
@@ -63,15 +63,15 @@ def update_day():
     day_id = str(uuid.uuid4()).replace("-", "")
 
     # region Check if day already exists
-    _logger.debug(game_data)
-    cur.execute(query['day']['check_day_exists'], (today,))
+    # _logger.debug(game_data)
+    cur.execute(lt_config.query['day']['check_day_exists'], (today,))
     day_data = cur.fetchall()
     if len(day_data) < 1:
         feed_data_modified = True
         _logger.info('Day does not exist, inserting new day: ' + today)
         try:
             values = (day_id, game_data['day']['dateandtime'], game_data['day']['lastmodified'])
-            cur.execute(query['day']['insert'], values)
+            cur.execute(lt_config.query['day']['insert'], values)
             dbconn.commit()
         except Exception as e:
             _logger.debug('Failed to insert new day: ' + str(e))
@@ -82,7 +82,7 @@ def update_day():
         _logger.info("Last modified date has changed. Was: " + str(old_lastmodified) + ", Now: " +
                      str(new_lastmodified) + " updating row in database for day: " + str(today))
         lastmodified = int(game_data['day']['lastmodified'])
-        cur.execute(query['day']['update_lastmodified'], (lastmodified, today,))
+        cur.execute(lt_config.query['day']['update_lastmodified'], (lastmodified, today,))
         dbconn.commit()
     else:
         _logger.info('Game data has not changed since last update')
@@ -100,7 +100,7 @@ def update_day():
 
 def insert_game(guid, day_id, league, game, cursor, created_at):
     global dbconn
-    cursor.execute(query['games']['insert'], (
+    cursor.execute(lt_config.query['games']['insert'], (
         str(guid),
         day_id,
         league['name'],
@@ -140,7 +140,7 @@ def insert_game(guid, day_id, league, game, cursor, created_at):
 def update_games(data, today):
     _logger.info('Inserting new game data')
     cur = opendb()
-    cur.execute(query['day']['get_day_id'], (today,))
+    cur.execute(lt_config.query['day']['get_day_id'], (today,))
     day_id = cur.fetchone()['day_id']
     _logger.info('Inserting games with day id: ' + str(day_id))
     created_at = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
@@ -159,14 +159,15 @@ def update_games(data, today):
 
 def get_feed_data():
     today = datetime.today().strftime('%Y%m%d')
-    response = requests.get(feed_url + today)
+    response = requests.get(lt_config.feed_url + today)
     return json.loads(response.text.lower())
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='Enable verbose logging messages', dest='v')
-    parser.add_argument('--setup', action='store_true', help='Prepare the application for first use.')
+    parser.add_argument('--setup', action='store_true', help='Prepare the application for first use.',
+                        dest='setup')
     args = parser.parse_args()
     if args.v:
         _logger.setLevel(logging.DEBUG)

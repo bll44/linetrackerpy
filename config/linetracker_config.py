@@ -1,5 +1,9 @@
 import os
 
+# region Server configuration
+server_conf_file = os.path.abspath(os.path.join(__file__, '..', 'server.conf'))
+# endregion
+
 # region Scoresandodds API config
 # base json api url for scoresandodds
 feed_url = 'http://www.scoresandodds.com/feeds/day/'
@@ -11,7 +15,6 @@ db_name = 'linetracker.db'
 db_file = os.path.abspath(os.path.join(db_path, db_name))
 # endregion
 
-# region SQL queries
 
 # region Table create statements
 # sql for creating the `day` table
@@ -106,17 +109,6 @@ query['games'] = {
     )
     """
 }
-# endregion
-
-# query['day']['insert'] = """
-# INSERT INTO day (day_id, date, lastmodified) VALUES (?, ?, ?)
-# """
-# query['day']['check_day_exists'] = """
-# SELECT * FROM day WHERE date = ?
-# """
-# query['day']['update_lastmodified'] = """
-# UPDATE day SET lastmodified = ? WHERE date = ?
-# """
 # endregion
 
 # region League config
