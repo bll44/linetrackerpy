@@ -1,18 +1,17 @@
-import time
-import requests
-import json
-from datetime import datetime
-from config import linetracker_config as lt_config
-import sqlite3
-import uuid
-import logging
 import argparse
-import linetracker_setup
+import json
+import logging
+import sqlite3
 import threading
+import time
+import uuid
+from datetime import datetime
 import cherrypy
+import requests
+import linetracker_setup
+from config import linetracker_config as lt_config
+from helpers.utils.logger import configure_logging
 from server import LTServer
-from lib.logger import configure_logging
-
 
 _logger = configure_logging(__name__, level='DEBUG')
 

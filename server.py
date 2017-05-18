@@ -1,10 +1,7 @@
 import cherrypy
-import logging
-from lib.logger import configure_logging
-import sqlite3
-from lib import db
-from pprint import pprint
+from helpers.utils.logger import configure_logging
 
+from helpers.utils import db
 
 _logger = configure_logging(__name__, level='DEBUG')
 
