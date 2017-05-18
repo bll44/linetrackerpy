@@ -12,6 +12,7 @@ import linetracker_setup
 from config import linetracker_config as lt_config
 from helpers.utils.logger import configure_logging
 from server import LTServer
+import os
 
 _logger = configure_logging(__name__, level='DEBUG')
 
