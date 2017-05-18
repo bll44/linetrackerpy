@@ -45,7 +45,7 @@ def closedb():
 # endregion
 
 def run_server():
-    cherrypy.config.update()
+    cherrypy.config.update(lt_config.server_conf_file)
     cherrypy.quickstart(LTServer(), '/')
 
 def update_data():
