@@ -2,12 +2,12 @@ import os
 
 # region Scoresandodds API config
 # base json api url for scoresandodds
-feed_url = "http://www.scoresandodds.com/feeds/day/"
+feed_url = 'http://www.scoresandodds.com/feeds/day/'
 # endregion
 
 # region Database config
-db_path = os.path.abspath(os.path.join(__file__, "..", "..", "database"))
-db_name = "linetracker.db"
+db_path = os.path.abspath(os.path.join(__file__, '..', '..', 'database'))
+db_name = 'linetracker.db'
 db_file = os.path.abspath(os.path.join(db_path, db_name))
 # endregion
 
@@ -33,8 +33,8 @@ CREATE TABLE "games" ( `id` TEXT NOT NULL, `day_id` TEXT NOT NULL, `league` TEXT
 """
 
 dbtable_create_statements = {
-    "day": create_day_table_sql,
-    "games": create_games_table_sql
+    'day': create_day_table_sql,
+    'games': create_games_table_sql
 }
 
 verify_table_sql = """
@@ -44,17 +44,17 @@ SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?
 query = {}
 
 # region `day` table queries
-query["day"] = {
-    "insert": """
+query['day'] = {
+    'insert': """
     INSERT INTO day (day_id, date, lastmodified) VALUES (?, ?, ?)    
     """,
-    "check_day_exists": """
+    'check_day_exists': """
     SELECT * FROM day WHERE date = ?
     """,
-    "update_lastmodified": """
+    'update_lastmodified': """
     UPDATE day SET lastmodified = ? WHERE date = ?
     """,
-    "get_day_id": """
+    'get_day_id': """
     SELECT day_id FROM day WHERE date = ?
     """
 }
@@ -62,7 +62,7 @@ query["day"] = {
 
 # region `games` table queries
 query['games'] = {
-    "insert": """
+    'insert': """
     INSERT INTO games (
         id,
         day_id,

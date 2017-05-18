@@ -11,12 +11,10 @@ import linetracker_setup
 import threading
 import cherrypy
 from server import LTServer
+from lib.logger import configure_logging
 
-_logger = logging.getLogger(__name__)
-_logger.setLevel(logging.INFO)
-ch = logging.StreamHandler()
-ch.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
-_logger.addHandler(ch)
+
+_logger = configure_logging(__name__, level='DEBUG')
 
 # Database connection global
 dbconn = None
@@ -32,17 +30,17 @@ def dict_factory(cursor, row):
 # region Database connection methods
 def opendb():
     global dbconn
-    _logger.debug("Opening database connection")
+    _logger.debug('Opening database connection')
     try:
        dbconn = sqlite3.connect(db_file)
        dbconn.row_factory = dict_factory
     except Exception as e:
-        _logger.debug("Could not open a connection to the database: " + str(e))
+        _logger.debug('Could not open a connection to the database: ' + str(e))
     return dbconn.cursor()
 
 def closedb():
     global dbconn
-    _logger.debug("Closing database connection")
+    _logger.debug('Closing database connection')
     dbconn.close()
 # endregion
 
@@ -58,7 +56,7 @@ def update_day():
     cur = opendb()
     today = datetime.today().strftime('%Y-%m-%d')
     try:
-        _logger.info("Getting feed data for: " + str(today))
+        _logger.info('Getting feed data for: ' + str(today))
         game_data = get_feed_data()
     except Exception as e:
         _logger.debug("Failed to get feed data: " + str(e))
@@ -70,13 +68,13 @@ def update_day():
     day_data = cur.fetchall()
     if len(day_data) < 1:
         feed_data_modified = True
-        _logger.info("Day does not exist, inserting new day: " + today)
+        _logger.info('Day does not exist, inserting new day: ' + today)
         try:
             values = (day_id, game_data['day']['dateandtime'], game_data['day']['lastmodified'])
             cur.execute(query['day']['insert'], values)
             dbconn.commit()
         except Exception as e:
-            _logger.debug("Failed to insert new day: " + str(e))
+            _logger.debug('Failed to insert new day: ' + str(e))
     elif int(game_data['day']['lastmodified']) != int(day_data[0]['lastmodified']):
         feed_data_modified = True
         new_lastmodified = int(game_data['day']['lastmodified'])
@@ -87,7 +85,7 @@ def update_day():
         cur.execute(query['day']['update_lastmodified'], (lastmodified, today,))
         dbconn.commit()
     else:
-        _logger.info("Game data has not changed since last update")
+        _logger.info('Game data has not changed since last update')
         feed_data_modified = False
     # endregion
 
@@ -140,11 +138,11 @@ def insert_game(guid, day_id, league, game, cursor, created_at):
 
 
 def update_games(data, today):
-    _logger.info("Inserting new game data")
+    _logger.info('Inserting new game data')
     cur = opendb()
     cur.execute(query['day']['get_day_id'], (today,))
     day_id = cur.fetchone()['day_id']
-    _logger.info("Inserting games with day id: " + str(day_id))
+    _logger.info('Inserting games with day id: ' + str(day_id))
     created_at = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
     for league in data['day']['league']:
         if type(league['game']).__name__ == 'list':
@@ -166,19 +164,19 @@ def get_feed_data():
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-v", "--verbose", action="store_true",
-                        help="Enable verbose logging messages", dest="v")
-    parser.add_argument("--setup", action="store_true", help="Prepare the application for first use.")
+    parser.add_argument('-v', '--verbose', action='store_true',
+                        help='Enable verbose logging messages', dest='v')
+    parser.add_argument('--setup', action='store_true', help='Prepare the application for first use.')
     args = parser.parse_args()
     if args.v:
         _logger.setLevel(logging.DEBUG)
-        _logger.debug("Verbose logging enabled")
+        _logger.debug('Verbose logging enabled')
 
     if args.setup:
         # prepare the application for first use
         # set logging level to DEBUG since this is initial application setup task
         _logger.setLevel(logging.DEBUG)
-        _logger.info("Performing initial setup of the application")
+        _logger.info('Performing initial setup of the application')
         # start the setup
         linetracker_setup.run_setup()
     else:
@@ -194,6 +192,6 @@ def main():
         server.join()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     # Call to main
     main()
