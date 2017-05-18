@@ -1,6 +1,10 @@
 import os
 
-# region Server configuration
+# region Logging configuration
+log_dir = os.path.abspath(os.path.join(__file__, '..', '..', 'logs'))
+# endregion
+
+# region CherryPy server configuration
 server_conf_file = os.path.abspath(os.path.join(__file__, '..', 'server.conf'))
 # endregion
 
@@ -44,6 +48,7 @@ verify_table_sql = """
 SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?
 """
 # endregion
+
 query = {}
 
 # region `day` table queries
