@@ -1,6 +1,5 @@
 import os
 import sqlite3
-
 from config.linetracker_config \
     import \
     db_file, \

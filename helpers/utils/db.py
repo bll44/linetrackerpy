@@ -1,5 +1,4 @@
 import sqlite3
-
 from config.linetracker_config import db_file
 from helpers.utils.logger import configure_logging
 

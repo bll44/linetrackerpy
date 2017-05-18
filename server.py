@@ -3,6 +3,7 @@ from helpers.utils.logger import configure_logging
 
 from helpers.utils import db
 
+# Configures the logging for the console StreamHandler()
 _logger = configure_logging(__name__, level='DEBUG')
 
 class LTServer(object):
